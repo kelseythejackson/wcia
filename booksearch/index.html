@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Book Search</title>
+    <script>
+      class BookSearch extends HTMLElement {
+        connectedCallback() {
+          this.doSearch();
+        }
+        doSearch() {
+          const url =
+            "https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=AIzaSyBD9Nv6CKObinwUbDR2RGJJi810jaXojDE";
+          const request = new XMLHttpRequest();
+          request.open("GET", url, true);
+          request.addEventListener("load", (event) => {
+            this.renderResults(JSON.parse(event.target.response).items);
+          });
+          request.send();
+        }
+        renderResults(items) {
+          let html = "";
+          items.forEach((item) => {
+            if (item.volumeInfo.imageLinks) {
+              html += `<img src="${item.volumeInfo.imageLinks.smallThumbnail}" />`;
+            } else {
+              html += `<img src="http://books.google.com/books/content?id=6P_jN6zUuMcC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api" />`;
+            }
+          });
+          this.innerHTML = html;
+        }
+      }
+      customElements.define("book-search", BookSearch);
+    </script>
+    <style>
+      book-search {
+        border-style: solid;
+        border-width: 1px;
+        border-color: #9a9a9a;
+        padding: 10px;
+        background-color: #fafafa;
+        display: inline-block;
+        text-align: center;
+      }
+
+      book-search img {
+        margin: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <book-search></book-search>
+  </body>
+</html>
