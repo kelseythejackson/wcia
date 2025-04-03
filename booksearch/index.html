@@ -5,20 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Google Book Search</title>
     <script>
+      // variables apiKey AIzaSyBD9Nv6CKObinwUbDR2RGJJi810jaXojDE
       class BookSearch extends HTMLElement {
         connectedCallback() {
           this.doSearch();
         }
-        doSearch() {
-          const url =
-            "https://www.googleapis.com/books/v1/volumes?q=flowers+inauthor:keyes&key=AIzaSyBD9Nv6CKObinwUbDR2RGJJi810jaXojDE";
-          const request = new XMLHttpRequest();
-          request.open("GET", url, true);
-          request.addEventListener("load", (event) => {
-            this.renderResults(JSON.parse(event.target.response).items);
-          });
-          request.send();
+        set apiKey(value) {
+          this._apiKey = value;
+          this.doSearch();
         }
+
+        set searchTerm(value) {
+          this._searchTerm = value;
+          this.doSearch();
+        }
+
+        get searchTerm() {
+          return this._searchTerm;
+        }
+        doSearch() {
+          if (this._apiKey && this._searchTerm) {
+            const url = `https://www.googleapis.com/books/v1/volumes?q=${this._searchTerm}+inauthor:keyes&key=${$this._apiKey}`;
+            const request = new XMLHttpRequest();
+            request.open("GET", url, true);
+            request.addEventListener("load", (event) => {
+              this.renderResults(JSON.parse(event.target.response).items);
+            });
+            request.send();
+          }
+        }
+
         renderResults(items) {
           let html = "";
           items.forEach((item) => {
