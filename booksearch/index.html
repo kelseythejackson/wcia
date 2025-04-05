@@ -7,25 +7,22 @@
     <script>
       // variables apiKey AIzaSyBD9Nv6CKObinwUbDR2RGJJi810jaXojDE
       class BookSearch extends HTMLElement {
-        connectedCallback() {
-          this.doSearch();
+        static get observedAttributes() {
+          return ["searchterm"];
         }
-        set apiKey(value) {
-          this._apiKey = value;
-          this.doSearch();
-        }
-
-        set searchTerm(value) {
-          this._searchTerm = value;
-          this.doSearch();
-        }
-
-        get searchTerm() {
-          return this._searchTerm;
+        // connectedCallback() {
+        //   this.doSearch();
+        // }
+        attributeChangedCallback(name, oldval, newval) {
+          if (name === "searchterm") {
+            this.doSearch();
+          }
         }
         doSearch() {
-          if (this._apiKey && this._searchTerm) {
-            const url = `https://www.googleapis.com/books/v1/volumes?q=${this._searchTerm}+inauthor:keyes&key=${$this._apiKey}`;
+          if (this.getAttribute("apiKey") && this.getAttribute("searchTerm")) {
+            const url = `https://www.googleapis.com/books/v1/volumes?q=${this.getAttribute(
+              "searchTerm"
+            )}+inauthor:keyes&key=${this.getAttribute("apiKey")}`;
             const request = new XMLHttpRequest();
             request.open("GET", url, true);
             request.addEventListener("load", (event) => {
@@ -66,6 +63,21 @@
     </style>
   </head>
   <body>
-    <book-search></book-search>
+    <div>
+      <label for="">Enter search term:</label>
+      <input type="text" onchange="updateBookSearch(event)" />
+    </div>
+    <script>
+      function updateBookSearch(event) {
+        document
+          .querySelector("book-search")
+          .setAttribute("searchterm", event.target.value);
+      }
+    </script>
+
+    <book-search
+      apiKey="AIzaSyBD9Nv6CKObinwUbDR2RGJJi810jaXojDE"
+      searchterm="farm"
+    ></book-search>
   </body>
 </html>
