@@ -10,9 +10,11 @@
         static get observedAttributes() {
           return ["searchterm"];
         }
-        // connectedCallback() {
-        //   this.doSearch();
-        // }
+        connectedCallback() {
+          if (this.hasAttribute("backgroundcolor")) {
+            this.style.backgroundColor = this.getAttribute("backgroundcolor");
+          }
+        }
         attributeChangedCallback(name, oldval, newval) {
           if (name === "searchterm") {
             this.doSearch();
@@ -20,7 +22,7 @@
         }
         doSearch() {
           if (this.getAttribute("apiKey") && this.getAttribute("searchTerm")) {
-            const url = `https://www.googleapis.com/books/v1/volumes?q=${this.getAttribute(
+            const url = `${this.getAttribute("baseuri")}?q=${this.getAttribute(
               "searchTerm"
             )}+inauthor:keyes&key=${this.getAttribute("apiKey")}`;
             const request = new XMLHttpRequest();
@@ -78,6 +80,8 @@
     <book-search
       apiKey="AIzaSyBD9Nv6CKObinwUbDR2RGJJi810jaXojDE"
       searchterm="farm"
+      backgroundcolor="red"
+      baseuri="https://www.googleapis.com/books/v1/volumes"
     ></book-search>
   </body>
 </html>
