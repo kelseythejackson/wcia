@@ -1,5 +1,11 @@
 export default class WebHarpString extends HTMLElement {
-  strum(params) {}
+  strum(params) {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+    this.timer = setTimeout(() => this.stopStrum(), 1000);
+    console.log(params);
+  }
   stopStrum() {}
   connectedCallback() {
     this.innerHTML = `

@@ -7,6 +7,16 @@ export default class WebHarpApp extends HTMLElement {
       "strings"
     )}"></webharp-strings>
     `;
+    this.stringsElement = this.querySelector("webharp-strings");
+    this.addEventListener("mousemove", (e) => this.onMouseMove(e));
+  }
+
+  onMouseMove(event) {
+    this.stringsElement.points = {
+      last: this.lastPoint,
+      current: { x: event.pageX, y: event.pageY },
+    };
+    this.lastPoint = { x: event.pageX, y: event.pageY };
   }
 }
 if (!customElements.get("webharp-app")) {
