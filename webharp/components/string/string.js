@@ -1,13 +1,48 @@
+import MIDI from "../../midijs.wrapper.js";
 export default class WebHarpString extends HTMLElement {
+  // file: components/string/string.js
+
+  // file: components/string/string.js
+
   strum(params) {
     if (this.timer) {
       clearTimeout(this.timer);
     }
-    this.timer = setTimeout(() => this.stopStrum(), 1000);
-    console.log(params);
+
+    let dur = params.power * 10 + 250;
+    this.classList.add("shake", "shake-constant", "shake-horizontal");
+    if (dur < 500) {
+      this.classList.add("shake-little");
+    }
+    this.timer = setTimeout(() => this.stopStrum(), dur);
+    this.playSound(params);
   }
-  stopStrum() {}
+
+  playSound(params) {
+    if (!this._ready) {
+      return;
+    }
+
+    let note = 60 + params.string * 5;
+    MIDI.setVolume(0, 127);
+    MIDI.noteOn(0, note, params.power, 0);
+    MIDI.noteOff(0, note, 0.75);
+  }
+
+  stopStrum() {
+    this.classList.remove(
+      "shake",
+      "shake-constant",
+      "shake-horizontal",
+      "shake-little"
+    );
+  }
   connectedCallback() {
+    MIDI.loadPlugin({
+      soundfontUrl: "./",
+      instrument: "acoustic_grand_piano",
+      onsuccess: () => this.onLoaded(),
+    });
     this.innerHTML = `
             <div class="line"></div>
             <style>
@@ -18,6 +53,9 @@ export default class WebHarpString extends HTMLElement {
                 }
             </style>
         `;
+  }
+  onLoaded() {
+    this._ready = true;
   }
 }
 
