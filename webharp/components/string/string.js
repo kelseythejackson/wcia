@@ -1,9 +1,6 @@
 import MIDI from "../../midijs.wrapper.js";
+
 export default class WebHarpString extends HTMLElement {
-  // file: components/string/string.js
-
-  // file: components/string/string.js
-
   strum(params) {
     if (this.timer) {
       clearTimeout(this.timer);
@@ -37,25 +34,27 @@ export default class WebHarpString extends HTMLElement {
       "shake-little"
     );
   }
+
+  onLoaded() {
+    this._ready = true;
+  }
+
   connectedCallback() {
     MIDI.loadPlugin({
       soundfontUrl: "./",
       instrument: "acoustic_grand_piano",
       onsuccess: () => this.onLoaded(),
     });
-    this.innerHTML = `
-            <div class="line"></div>
-            <style>
-                webharp-string > .line {
-                    background-color: white;
-                    height: 100%;
-                    width: 2px;
-                }
-            </style>
-        `;
-  }
-  onLoaded() {
-    this._ready = true;
+
+    this.innerHTML =
+      '<div class="line"></div> \
+                          <style>\
+                              webharp-string > .line { \
+                                  background-color: white;\
+                                  height: 100%; \
+                                  width: 2px; \
+                              }\
+                          </style>';
   }
 }
 

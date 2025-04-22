@@ -1,12 +1,11 @@
-import WebHarpStrings from "../strings/strings.js";
+import Strings from "../strings/strings.js";
 
 export default class WebHarpApp extends HTMLElement {
   connectedCallback() {
-    this.innerHTML = `
-    <webharp-strings strings="${this.getAttribute(
-      "strings"
-    )}"></webharp-strings>
-    `;
+    this.innerHTML =
+      '<webharp-strings strings="' +
+      this.getAttribute("strings") +
+      '"></webharp-strings>';
     this.stringsElement = this.querySelector("webharp-strings");
     this.addEventListener("mousemove", (e) => this.onMouseMove(e));
   }
@@ -19,6 +18,7 @@ export default class WebHarpApp extends HTMLElement {
     this.lastPoint = { x: event.pageX, y: event.pageY };
   }
 }
+
 if (!customElements.get("webharp-app")) {
   customElements.define("webharp-app", WebHarpApp);
 }
